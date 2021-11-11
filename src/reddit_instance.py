@@ -35,6 +35,14 @@ class reddit_instance:
         for multi in multireddits:
             multi.delete()
 
+    def duplicate_multireddits_from_instance(self, from_reddit_instance):
+        from_subscribed_multireddits = from_reddit_instance.get_multireddits()
+        to_subscribed_multireddits = self.get_multireddits()
+        if to_subscribed_multireddits:
+            self.delete_multireddits(to_subscribed_multireddits)
+        if from_subscribed_multireddits:
+            self.add_multireddits(from_subscribed_multireddits)
+
     def duplicate_subreddits_from_instance(self,
                                            from_reddit_instance,
                                            delete_difference=False):
@@ -47,3 +55,7 @@ class reddit_instance:
             difference = list(
                 set(from_subscribed_subs).difference(set(to_subscribed_subs)))
             self.unsubscribe_from_subredddits(difference)
+
+    def duplicate_preferences(self, from_reddit_instance):
+        original_preferences = from_reddit_instance.user.preferences()
+        self.user.preferences.update(**original_preferences)
